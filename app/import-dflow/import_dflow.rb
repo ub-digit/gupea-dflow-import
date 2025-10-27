@@ -67,21 +67,15 @@ module ImportDflow
 
    # All of the constants that are fetched from the environment:
 
-   # - the service name used for ssh-ing to the DSpace Docker container
-   DSPACE_SERVICE_NAME = ENV['DSPACE_SERVICE_NAME'          ]
-
    # - the binary (in the DSpace Docker container) which performs the import
    DSPACE_BINARY       = ENV['DSPACE_BINARY'                ]
 
    # - base url for accessing the handle of the imported package
    GUPEA_URLBASE       = ENV['IMPORT_DFLOW_GUPEA_URLBASE'   ]
 
-   # - base path in (volume mounted) import dFlow Docker container, e.g., '/data/import/'
-   BASE_PATH_THIS      = ENV['IMPORT_DFLOW_BASE_PATH_THIS'  ]
-
    # - base path in (volume mounted) DSpace Docker container, e.g., '/dspace/var/dflow/'
    #   used by the import command (executed in the DSpace Docker container) 
-   BASE_PATH_DSPACE    = ENV['IMPORT_DFLOW_BASE_PATH_DSPACE']
+   BASE_PATH    = ENV['IMPORT_DFLOW_BASE_PATH']
 
    # - regexp used to extract the handle from the mapfile produced by the import ('files 2077/' in production)
    MAPFILE_REGEXP      = ENV['IMPORT_DFLOW_MAPFILE_REGEXP'  ]
@@ -91,9 +85,8 @@ module ImportDflow
 
    # Paths (may) differ in the import dFlow and DSpace Docker containers (but both are mounted to an external volume).
    # (Here are the paths for new and logs. The paths for done and error are built dynamically.)
-   NEW_FILES_PATH_DSPACE = BASE_PATH_DSPACE + 'new/'
-   NEW_FILES_PATH_THIS   = BASE_PATH_THIS   + 'new/'
-   LOG_FILES_PATH_THIS   = BASE_PATH_THIS   + 'logs/'
+   NEW_FILES_PATH   = BASE_PATH   + 'new/'
+   LOG_FILES_PATH   = BASE_PATH   + 'logs/'
 
    # Output files:
 
@@ -101,16 +94,16 @@ module ImportDflow
    #      time: 2015-03-20 11:08:21, dflow_id: 104613, url: http://hdl.handle.net/2077/38541
    #      time: 2015-03-20 11:08:31, dflow_id: 104614, url: http://hdl.handle.net/2077/38542
    #      time: 2015-03-20 11:08:40, dflow_id: 104618, url: http://hdl.handle.net/2077/38543
-   HANDLE_LOG = LOG_FILES_PATH_THIS + "handles.log" 
+   HANDLE_LOG = LOG_FILES_PATH + "handles.log"
 
    # - A short extract from the error log may look as follows (as is evident, the extra_info field may be empty):
    #      time: 2016-01-20 15:50:08, dflow_id: 105096, msg: Package not found, extra_info: 
    #      time: 2016-01-25 15:01:00, dflow_id: 104940, msg: The package is probably already imported, extra_info: time: 2016-01-25 15:00:53, dflow_id: 104940, url: http://hdl.handle.net/2077/41641
    #      time: 2016-02-02 18:00:44, dflow_id: 105364, msg: Mapfile content error, handle could not be found, extra_info: 
-   ERROR_LOG  = LOG_FILES_PATH_THIS + "error.log"
+   ERROR_LOG  = LOG_FILES_PATH + "error.log"
 
-   # Command to the DSpace binary, using ssh to the DSpace Docker container
-   IMPORT_CMD = "ssh #{DSPACE_SERVICE_NAME} #{DSPACE_BINARY} import"
+   # Command to the DSpace binary
+   IMPORT_CMD = "#{DSPACE_BINARY} import"
 
    # Extracts from strings produced by DSpace, telling the outcome of the import 
    SUCCESS_STR            = "It appears there is no handle file -- generating one"
@@ -132,7 +125,7 @@ module ImportDflow
       validate_dflow_id(dflow_id, app)
 
       # Basic paths (in the import dFlow container)
-      import_root_dir  = NEW_FILES_PATH_THIS + dflow_id
+      import_root_dir  = NEW_FILES_PATH + dflow_id
       import_files_dir = import_root_dir     + "/files/"
       collection_file  = import_root_dir     + "/collection"
       mapfile          = import_root_dir     + "/mapfile"     
@@ -182,7 +175,7 @@ module ImportDflow
       if !File.directory?(import_files_dir)
          move_to_error(dflow_id, "Files directory not found", NO_EXTRA_INFO, app)
       end
-      if !File.exists?(collection_file)
+      if !File.exist?(collection_file)
          move_to_error(dflow_id, "Collection file not found", NO_EXTRA_INFO, app)
       end
    end
@@ -236,7 +229,7 @@ module ImportDflow
    private_class_method  def self.import_to_dspace(dflow_id, collection_handle, app)
   
       # Paths in the DSpace container
-      import_root_dir_dspace = NEW_FILES_PATH_DSPACE + dflow_id
+      import_root_dir_dspace = NEW_FILES_PATH + dflow_id
       mapfile_dspace = import_root_dir_dspace + "/mapfile"
 
       # Import by executing the DSpace CLI import command in the DSpace container
@@ -285,12 +278,12 @@ module ImportDflow
    # Move files
 
    private_class_method def self.move_to_error(dflow_id, error_msg, extra_error_info, app)
-      move_dir(NEW_FILES_PATH_THIS + dflow_id, NEW_FILES_PATH_THIS, "error")
+      move_dir(NEW_FILES_PATH + dflow_id, NEW_FILES_PATH, "error")
       handle_server_error(dflow_id, error_msg, extra_error_info, app)
    end
 
    private_class_method def self.move_to_done(dflow_id)
-      move_dir(NEW_FILES_PATH_THIS + dflow_id, NEW_FILES_PATH_THIS, "done")
+      move_dir(NEW_FILES_PATH + dflow_id, NEW_FILES_PATH, "done")
    end
 
    private_class_method def self.move_dir(src_dir, base_path, mode)
