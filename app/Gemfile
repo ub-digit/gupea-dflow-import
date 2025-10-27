@@ -1,0 +1,11 @@
+source 'https://rubygems.org'
+
+# Web
+gem 'puma'           , '~> 5.3' 
+gem 'sinatra'        , '~> 2.1' 
+gem 'sinatra-contrib', '~> 2.1' # includes automatic code reloader for dev
+
+# Debug
+group :development, :test do
+  gem 'pry-byebug', '~> 3.9'
+end
