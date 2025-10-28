@@ -1,0 +1,16 @@
+services:
+  gupea-dflow-import:
+    image: docker.ub.gu.se/gupea-dflow-import:${GIT_REVISION}
+    env_file:
+      - .env
+    environment:
+      RACK_ENV: "development"
+    volumes:
+      #- '../:/usr/src/app'
+      - '${GUPEA_DFLOW_IMPORT_DATA_HOST_DIR}:${GUPEA_DFLOW_IMPORT_BASE_PATH_INTERNAL}'
+    ports:
+      - ${HOST_PORT}:3000
+networks:
+  default:
+    name: dspace_dspace-net
+    external: true
