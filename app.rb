@@ -1,4 +1,4 @@
-require_relative 'dflow-import/dflow-import.rb'
+require_relative 'dflow-import/dflow_import.rb'
 
 require 'json'
 require 'bundler'
