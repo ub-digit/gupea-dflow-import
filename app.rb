@@ -1,11 +1,11 @@
-require_relative 'import-dflow/import_dflow.rb'
+require_relative 'dflow-import/dflow-import.rb'
 
 require 'json'
-
-require 'sinatra/base'
-require "sinatra/reloader"
 require 'bundler'
-Bundler.require ENV['APP_ENV'].to_sym
+Bundler.require(:default, ENV.fetch('RACK_ENV', 'development').to_sym)
+
+# Only load reloader in development
+require 'sinatra/reloader' if ENV.fetch('RACK_ENV', 'development') == 'development'
 
 class App < Sinatra::Base
 
@@ -21,6 +21,4 @@ class App < Sinatra::Base
       content_type :json
       ImportDflow.run(params, self)
    end
-
 end
-

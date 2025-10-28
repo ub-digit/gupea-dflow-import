@@ -1,9 +1,9 @@
-module ImportDflow
+module DflowImport
 
    # This module is responsible for the import of dFlow files to DSpace.
    # It presumes a DSpace Docker container with an ssh server and the appropriate key 
    # installed (and of course an ssh client, keys and an entry for the host in
-   # known_hosts in a import dFlow container hosting this ImportDflow module).
+   # known_hosts in a import dFlow container hosting this DflowImport module).
    #
    # For communication it uses the DSpace CLI which is invoked through ssh.
    # Another means of communication which also has to be set up is a dual volume binding.
@@ -15,7 +15,7 @@ module ImportDflow
    # this module by environment variables, and hence are configurable. 
    #
    # The file packages to be imported should be placed in the 'new' directory of the 
-   # external directory. After ImportDflow.run is invoked, the package will be moved to 
+   # external directory. After DflowImport.run is invoked, the package will be moved to
    # the 'done' directory, if the import was successful, or the 'error' directory, if 
    # there were any errors. An additional 'mapfile' file containing an external handle
    # will be created and added to successful file packages. The package then can be accessed
@@ -71,17 +71,17 @@ module ImportDflow
    DSPACE_BINARY       = ENV['DSPACE_BINARY'                ]
 
    # - base url for accessing the handle of the imported package
-   GUPEA_URLBASE       = ENV['IMPORT_DFLOW_GUPEA_URLBASE'   ]
+   GUPEA_URLBASE       = ENV['DFLOW_IMPORT_GUPEA_URLBASE'   ]
 
    # - base path in (volume mounted) DSpace Docker container, e.g., '/dspace/var/dflow/'
    #   used by the import command (executed in the DSpace Docker container) 
-   BASE_PATH    = ENV['IMPORT_DFLOW_BASE_PATH']
+   BASE_PATH    = ENV['DFLOW_IMPORT_BASE_PATH']
 
    # - regexp used to extract the handle from the mapfile produced by the import ('files 2077/' in production)
-   MAPFILE_REGEXP      = ENV['IMPORT_DFLOW_MAPFILE_REGEXP'  ]
+   MAPFILE_REGEXP      = ENV['DFLOW_IMPORT_MAPFILE_REGEXP'  ]
 
    # - user used by the import command
-   USER                = ENV['IMPORT_DFLOW_USER'            ]
+   USER                = ENV['DFLOW_IMPORT_USER'            ]
 
    # Paths (may) differ in the import dFlow and DSpace Docker containers (but both are mounted to an external volume).
    # (Here are the paths for new and logs. The paths for done and error are built dynamically.)
