@@ -19,6 +19,6 @@ class App < Sinatra::Base
 
    get '/dflow_import/:id' do
       content_type :json
-      ImportDflow.run(params, self)
+      DflowImport.run(params, self)
    end
 end
