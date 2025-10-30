@@ -85,8 +85,8 @@ module DflowImport
 
   # Paths (may) differ in the import dFlow and DSpace Docker containers (but both are mounted to an external volume).
   # (Here are the paths for new and logs. The paths for done and error are built dynamically.)
-  NEW_FILES_PATH = BASE_PATH   + 'new/'
-  LOG_FILES_PATH = BASE_PATH   + 'logs/'
+  NEW_FILES_PATH = BASE_PATH   + '/new/'
+  LOG_FILES_PATH = BASE_PATH   + '/logs/'
 
   # Output files:
 
