@@ -1,0 +1,6 @@
+services:
+  gupea-dflow-import:
+    environment:
+      RACK_ENV: "development"
+    volumes:
+      - '../:/usr/src/app'

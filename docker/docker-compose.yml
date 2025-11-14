@@ -1,10 +1,11 @@
+name: 'gupea-dflow-import'
 services:
   gupea-dflow-import:
     image: docker.ub.gu.se/gupea-dflow-import:${GIT_REVISION}
     env_file:
       - .env
     environment:
-      RACK_ENV: "development"
+      RACK_ENV: "production"
     volumes:
       #- '../:/usr/src/app'
       - '${GUPEA_DFLOW_IMPORT_DATA_HOST_DIR}:${GUPEA_DFLOW_IMPORT_BASE_PATH_INTERNAL}'
