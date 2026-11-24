@@ -239,4 +239,4 @@ def dflow_import(dflow_id: str):
 
 if __name__ == "__main__":
     is_dev = os.environ.get("FLASK_ENV", "development") == "development"
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 4567)), debug=is_dev)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 3000)), debug=is_dev)
