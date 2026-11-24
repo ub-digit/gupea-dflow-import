@@ -15,24 +15,22 @@ FROM docker.ub.gu.se/dspace:dspace-8_x-${DSPACE_VERSION}
 
 RUN DEBIAN_FRONTEND=noninteractive \
   apt-get update \
-  && apt-get install -y  --no-install-recommends \
-     ruby-full build-essential vim \
+  && apt-get install -y --no-install-recommends \
+     python3 \
+     python3-flask \
+     build-essential \
+     vim \
   && rm -rf /var/lib/apt/lists/*
 
-RUN gem install bundler
-
-# Set working directory in container
+# Set working directory
 WORKDIR /usr/src/app/
 
 COPY --from=release /root/release /usr/src/app
 
-RUN bundle install --jobs 4 --retry 3
 
-COPY ./docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-ENTRYPOINT ["docker-entrypoint.sh"]
+ENTRYPOINT []
 
 EXPOSE 3000
 
-# Start the main process
-CMD ["bundle", "exec", "puma", "-b", "tcp://0.0.0.0:3000"]
+
+CMD ["python3", "main.py"]

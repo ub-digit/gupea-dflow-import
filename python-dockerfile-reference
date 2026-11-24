@@ -1,0 +1,10 @@
+FROM python:3.14
+
+WORKDIR /app
+RUN pip install --upgrade pip
+
+RUN pip install flask
+
+COPY *.py /app/
+
+CMD ["python", "main.py"]
